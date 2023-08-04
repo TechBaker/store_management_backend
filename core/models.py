@@ -1,13 +1,19 @@
 from django.db import models
+from os.path import join
 
 # Create your models here.
+def product_image_path(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = f"product_{instance.id}.{ext}"
+    return join('products', filename)
+
 class Product(models.Model):
     product_name = models.CharField(max_length=100)
     description = models.TextField()
     barcode = models.CharField(max_length=25, unique=True)
     reference = models.CharField(max_length=25, unique=True)
     category = models.CharField(max_length=50)
-    image_url = models.ImageField(upload_to='products', blank=True, null=True)
+    image_url = models.ImageField(upload_to=product_image_path, blank=True, null=True)
     buying_price = models.DecimalField(max_digits=10, decimal_places=2)
     selling_price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity_in_stock = models.IntegerField(default=0)
@@ -34,7 +40,7 @@ class SaleItem(models.Model):
     discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self) -> str:
-        return f" Product: {self.product.product_name}, quantity: {self.quantity}, total: {self.total}"
+        return f" Product: {self.product.product_name}, quantity: {self.quantity}, total: {self.total_amount}"
  
 class Sale(models.Model):
     client = models.OneToOneField(Client, on_delete=models.CASCADE)
