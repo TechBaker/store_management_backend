@@ -4,7 +4,11 @@ from .models import *
 # Register your models here.
 admin.site.register(Client)
 admin.site.register(Product)
-admin.site.register(SaleItem)
-admin.site.register(Sale)
+admin.site.register(OrderItem)
+admin.site.register(Order)
 admin.site.register(Receipt)
 admin.site.register(Invoice)
+admin.site.register(Category)
+admin.site.register(PaymentIn)
+admin.site.register(PaymentOut)
+admin.site.register(PaymentMethod)

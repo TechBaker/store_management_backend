@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from core.models import Client, Product, SaleItem, Sale, Receipt, Invoice
+from core.models import Client, Product, OrderItem, Order, Receipt, Invoice
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,14 +11,14 @@ class ClientSerializer(serializers.ModelSerializer):
         model = Client
         fields = '__all__'
 
-class SaleItemSerializer(serializers.ModelSerializer):
+class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = SaleItem
+        model = OrderItem
         fields = '__all__'
 
-class SaleSerializer(serializers.ModelSerializer):
+class OrderSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Sale
+        model = Order
         fields = '__all__'
 
 class ReceiptSerializer(serializers.ModelSerializer):

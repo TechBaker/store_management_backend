@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from core.models import Product, Client, SaleItem, Sale, Receipt, Invoice
+from core.models import Product, Client, OrderItem, Order, Receipt, Invoice
 from .serializers import *
 
 class ProductsList(APIView):
@@ -57,6 +57,22 @@ class ProductOperation(APIView):
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class ProductByBarcode(APIView):
+    def get_product_by_barcode(self, barcode):
+        try:
+            return Product.objects.get(barcode=barcode)
+        except:
+            return -1
+
+    def get(self, request, barcode):
+        product = self.get_product_by_barcode(barcode)
+        if product == -1:
+            return Response({
+                'status': 'The product does not exist'
+            }, status = status.HTTP_404_NOT_FOUND )
+        serializer = ProductSerializer(product)
+        return Response(serializer.data)
+
 class ClientList(APIView):
     def get(self, request):
         clients = Client.objects.all()
@@ -64,7 +80,7 @@ class ClientList(APIView):
         return Response(serializer.data)
 
 class AddClient(APIView):
-    def post(request):
+    def post(self, request):
         serializer = ClientSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -110,25 +126,25 @@ class ClientOperation(APIView):
         client.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class SaleItemList(APIView):
+class OrderItemList(APIView):
     def get(self, request):
-        saleItems = SaleItem.objects.all()
-        serializer = SaleItemSerializer(saleItems, many=True)
+        saleItems = OrderItem.objects.all()
+        serializer = OrderItemSerializer(saleItems, many=True)
         return Response(serializer.data)
 
-class AddSaleItem(APIView):
-    def post(request):
-        serializer = SaleItemSerializer(data=request.data)
+class AddOrderItem(APIView):
+    def post(self, request):
+        serializer = OrderItemSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class SaleItemOperation(APIView):
+class OrderItemOperation(APIView):
     def get_sale_item_by_id(self, pk):
         try:
-            return SaleItem.objects.get(pk=pk)
+            return OrderItem.objects.get(pk=pk)
         except:
             return -1
 
@@ -138,7 +154,7 @@ class SaleItemOperation(APIView):
             return Response({
                 'status': 'The sale item does not exist'
             }, status = status.HTTP_404_NOT_FOUND )
-        serializer = SaleItemSerializer(saleItem)
+        serializer = OrderItemSerializer(saleItem)
         return Response(serializer.data)
 
     def put(self, request, pk):
@@ -147,7 +163,7 @@ class SaleItemOperation(APIView):
             return Response({
                 'status': 'The sale item does not exist'
             }, status = status.HTTP_404_NOT_FOUND )
-        serializer = SaleItemSerializer(saleItem, data=request.data)
+        serializer = OrderItemSerializer(saleItem, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -163,25 +179,25 @@ class SaleItemOperation(APIView):
         saleItem.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class SaleList(APIView):
+class OrderList(APIView):
     def get(self, request):
-        sales = Sale.objects.all()
-        serializer = SaleSerializer(sales, many=True)
+        sales = Order.objects.all()
+        serializer = OrderSerializer(sales, many=True)
         return Response(serializer.data)
 
-class AddSale(APIView):
-    def post(request):
-        serializer = SaleSerializer(data=request.data)
+class AddOrder(APIView):
+    def post(self, request):
+        serializer = OrderSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class SaleOperation(APIView):
+class OrderOperation(APIView):
     def get_sale_by_id(self, pk):
         try:
-            return Sale.objects.get(pk=pk)
+            return Order.objects.get(pk=pk)
         except:
             return -1
 
@@ -191,7 +207,7 @@ class SaleOperation(APIView):
             return Response({
                 'status': 'The sale does not exist'
             }, status = status.HTTP_404_NOT_FOUND )
-        serializer = SaleSerializer(sale)
+        serializer = OrderSerializer(sale)
         return Response(serializer.data)
 
     def put(self, request, pk):
@@ -200,7 +216,7 @@ class SaleOperation(APIView):
             return Response({
                 'status': 'The sale does not exist'
             }, status = status.HTTP_404_NOT_FOUND )
-        serializer = SaleSerializer(sale, data=request.data)
+        serializer = OrderSerializer(sale, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -223,7 +239,7 @@ class ReceiptList(APIView):
         return Response(serializer.data)
 
 class AddReceipt(APIView):
-    def post(request):
+    def post(self, request):
         serializer = ReceiptSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -276,7 +292,7 @@ class InvoiceList(APIView):
         return Response(serializer.data)
 
 class AddInvoice(APIView):
-    def post(request):
+    def post(self, request):
         serializer = InvoiceSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

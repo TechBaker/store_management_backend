@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'core',
 ]
 
@@ -50,6 +51,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+]
+
+CORS_ALLOW_ALL_ORIGINS = False  # Set this to True if you want to allow all origins
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',  # Replace with the URL of your React app
+    # Add more origins as needed
 ]
 
 ROOT_URLCONF = 'store_management_backend.urls'
